@@ -1,0 +1,26 @@
+# Ignore all
+*
+
+# Stuff to whitelist
+
+!README.md
+!.gitignore
+
+## We want some stuff from .config
+
+!.config/
+.config/*
+
+!.config/awesome/
+!.config/awesome/*
+!.config/rofi/
+!.config/rofi/*
+!.config/custom-scripts/
+!.config/custom-scripts/*
+!.config/compton.conf
+
+## The dotfiles in ~ that we are interested in
+
+!.vimrc
+!.ideavimrc
+
