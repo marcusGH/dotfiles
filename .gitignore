@@ -17,6 +17,8 @@
 !.config/rofi/*
 !.config/custom-scripts/
 !.config/custom-scripts/*
+!.config/firefox/
+!.config/firefox/*
 !.config/compton.conf
 
 ## The dotfiles in ~ that we are interested in
