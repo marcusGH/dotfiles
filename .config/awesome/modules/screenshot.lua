@@ -34,7 +34,7 @@ end
 function screenshot_selection_clipboard()
 	-- often fails, so call it 10 times lmao
 	for i = 1, 10 do
-		_cmd("gnome-screenshot -f " .. screenshot .. " -a -c")
+		_cmd("gnome-screenshot -af /tmp/screenshot-image && cat /tmp/screenshot-image | xclip -i -selection clipboard -target image/png")
 	end
 	_show_msg("Taking a screenshot of selected area to clipboard")
 end
