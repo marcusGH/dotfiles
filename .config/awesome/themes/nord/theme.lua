@@ -167,6 +167,12 @@ theme.layout_cornerse   = themes_path .. "nord/layouts/cornerse.png"
 
 -- ################# WIDGET CONTAINERS ######################
 
+-- middle clock widget colours
+theme.clock_fg_focus  = theme.nord0
+theme.clock_bg_focus  = theme.nord13
+theme.clock_fg_normal = theme.fg_normal
+theme.clock_bg_normal = theme.bg_normal
+
 -- keyboard widget colours
 theme.keyboard_fg = theme.nord0
 theme.keyboard_bg = theme.nord12

@@ -23,6 +23,8 @@ local naughty = require("naughty")
 local ruled = require("ruled")
 local menubar = require("menubar")
 local hotkeys_popup = require("awful.hotkeys_popup")
+-- Screenshot utility
+local screenshot = require("modules.screenshot")
 -- Enable hotkeys help widget for VIM and other apps
 -- when client with a matching name is opened:
 require("awful.hotkeys_popup.keys")
@@ -161,8 +163,15 @@ local network_widget = require("modules.network")
 local mykeyboardlayout = require("modules.keyboard")
 
 -- Create a textclock widget and attach a calendar to it
-local mytextclock = wibox.widget.textclock(
-	string.format("<span color=%q><b>%%H:%%M</b></span>", beautiful.nord4), 60)
+local mytextclock = wibox.widget {
+	halign = "center",
+	widget = wibox.container.place,
+	wibox.widget.textclock(	-- refresh every 60 seconds
+		string.format("<span><b>%%H:%%M</b></span>"), 60),
+	-- matches the calendar popup's size (?)
+	forced_width = 233
+}
+
 local month_calendar = awful.widget.calendar_popup.month(beautiful.calendar_styling)
 
 mytextclock:connect_signal("mouse::enter", function()
@@ -181,8 +190,9 @@ mytextclock:buttons(gears.table.join(
 screen.connect_signal("request::desktop_decoration", function(s)
 	-- This alias saves some typing
 	local l = awful.layout.suit 
-	-- main tag
+	-- main tag (start at this one)
 	awful.tag.add(" TRM ", {
+		selected = true,
 		layout = l.fair,
 		gap_single_client = false,
 		gap = 15,
@@ -191,13 +201,13 @@ screen.connect_signal("request::desktop_decoration", function(s)
 	-- dev tag (development in e.g. jetbrain IDEs)
 	awful.tag.add(" DEV ", {
 		layout = l.tile,
+		gap_single_client = false,
 		gap = 5,
 		screen = s,
 	})
 	-- www tag (internet browsing)
 	awful.tag.add(" WEB ", {
 		layout = l.max.fullscreen,
-		border_width = 0,
 		screen = s
 	})
 	-- latex tag (vim + zathura)
@@ -205,6 +215,11 @@ screen.connect_signal("request::desktop_decoration", function(s)
 		layout = l.tile,
 		gap = 5,
 		screen = s,
+	})
+	-- chat tag (e.g. discord)
+	awful.tag.add(" CHT ", {
+		layout = l.tile,
+		screen = s
 	})
 	-- float tag (???)
 	awful.tag.add(" FLT ", {
@@ -269,6 +284,14 @@ screen.connect_signal("request::desktop_decoration", function(s)
 	local popup_arg_table = require("modules.tasklist-popup")
 	s.myappswitcher = awful.popup (popup_arg_table(s))
 
+	-- We need access to the clock later to change its colours
+	s.myclockwidget = wibox.widget {
+		fg = beautiful.clock_fg_normal,
+		bg = beautiful.clock_bg_normal,
+		mytextclock,
+		layout = wibox.container.background
+	}
+	
     -- Create the menubar wibox
     s.mywibox = awful.wibar({ position = "top", screen = s, height = 30 })
 
@@ -284,7 +307,7 @@ screen.connect_signal("request::desktop_decoration", function(s)
             s.mypromptbox,
         },
 		 -- Middle widgets
-        mytextclock,
+        s.myclockwidget,
 		-- s.mytasklist
         { -- Right widgets
             wibox.widget.systray(),
@@ -424,7 +447,16 @@ awful.keyboard.append_global_keybindings({
 	awful.key( {}, 'XF86AudioLowerVolume',    function() volumecfg:down() end,
 		{description = 'volume down', group = 'hotkeys'}),
 	awful.key( {}, 'XF86AudioMute',           function() volumecfg:toggle() end,
-		{description = 'toggle mute', group = 'hotkeys'})
+		{description = 'toggle mute', group = 'hotkeys'}),
+	-- Screenshots
+	awful.key({ }, "Print", screenshot_full,
+		{description = "Take a screenshot of entire screen", group = "hotkeys"}),
+	awful.key({ "Shift", }, "Print", screenshot_selection,
+		{description = "Take a screenshot of selection", group = "hotkeys"}),
+	awful.key({ "Shift", "Ctrl"}, "Print", screenshot_selection_clipboard,
+		{description = "Take a screenshot of selection to clipboard", group = "hotkeys"}),
+	awful.key({ "Ctrl" }, "Print", screenshot_delay,
+		{description = "Take a screenshot with a delay to clipboard", group = "hotkeys"})
 })
 
 -- Layout related keybindings
@@ -599,7 +631,9 @@ ruled.client.connect_signal("request::rules", function()
             focus     = awful.client.focus.filter,
             raise     = true,
             screen    = awful.screen.preferred,
-            placement = awful.placement.no_overlap+awful.placement.no_offscreen
+            placement = awful.placement.no_overlap+awful.placement.no_offscreen,
+			-- force clients (mostly terminals) to get the correct sizes
+			size_hints_honor = false
         }
     }
 
@@ -683,9 +717,37 @@ end)
 --     }
 -- end)
 
+-- disable borders for maximised and alone clients
+screen.connect_signal("arrange", function (s)
+    local max = s.selected_tag.layout.name == "max"
+	-- use tiled_clients so that other floating windows don't affect the count
+    local only_one = #s.tiled_clients == 1
+    -- but iterate over clients instead of tiled_clients as tiled_clients doesn't include maximized windows
+    for _, c in pairs(s.clients) do
+        if (max or only_one) and not c.floating or c.maximized then
+            c.border_width = 0
+        else
+            c.border_width = beautiful.border_width
+        end
+    end
+end)
+
 -- ##########################################################
 -- #                     MISCELLANEOUS  					#
 -- ##########################################################
+
+-- Colour the clock widget on the focused screen
+client.connect_signal("focus", function(c)
+	-- revert to default
+	for s in screen do
+		s.myclockwidget.bg = beautiful.clock_bg_normal
+		s.myclockwidget.fg = beautiful.clock_fg_normal
+	end
+	-- set the colours for the screen with the focused client
+	c.screen.myclockwidget.bg = beautiful.clock_bg_focus
+	c.screen.myclockwidget.fg = beautiful.clock_fg_focus
+end)
+
 
 -- Notification rules
 ruled.notification.connect_signal('request::rules', function()
