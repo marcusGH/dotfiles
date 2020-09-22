@@ -10,6 +10,7 @@
 * **Colour scheme**: [Nord](https://www.nordtheme.com/docs/colors-and-palettes)
 * **Font**: [JetBrains Mono](https://www.jetbrains.com/lp/mono/)
 * **GTK icons**: Nordic-Folders
+* **Firefox theme**: [Nord theme](https://addons.mozilla.org/en-GB/firefox/addon/nord-theme/) with some [custom CSS](https://github.com/marcusGH/dotfiles/tree/master/.config/firefox/chrome) on top
 
 ## Screenshots
 
