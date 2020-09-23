@@ -71,6 +71,7 @@ rofi_command = 'env /usr/bin/rofi -dpi ' .. get_dpi() .. ' -width ' ..
                          '~/.config/rofi/nord.rasi -run-command ' ..
 						 '"/bin/bash -c -i \'shopt -s expand_aliases; {cmd}\'"'
 firefox_command = "env firefox"
+i3lock_command  = "i3lock -i " .. awful.util.get_configuration_dir() .. "themes/nord/lockscreen.png"
 
 -- Default modkey.
 -- Usually, Mod4 is the key with a logo between Control and Alt.
@@ -456,7 +457,10 @@ awful.keyboard.append_global_keybindings({
 	awful.key({ "Shift", "Ctrl"}, "Print", screenshot_selection_clipboard,
 		{description = "Take a screenshot of selection to clipboard", group = "hotkeys"}),
 	awful.key({ "Ctrl" }, "Print", screenshot_delay,
-		{description = "Take a screenshot with a delay to clipboard", group = "hotkeys"})
+		{description = "Take a screenshot with a delay to clipboard", group = "hotkeys"}),
+	-- i3 lockscreen
+	awful.key({ modkey },		   "q",    function () awful.util.spawn(i3lock_command) end,
+		{description = "lock the screen", group="hotkeys"})
 })
 
 -- Layout related keybindings
@@ -633,7 +637,7 @@ ruled.client.connect_signal("request::rules", function()
             screen    = awful.screen.preferred,
             placement = awful.placement.no_overlap+awful.placement.no_offscreen,
 			-- force clients (mostly terminals) to get the correct sizes
-			size_hints_honor = false
+			size_hints_honor = true
         }
     }
 

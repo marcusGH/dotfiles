@@ -1,17 +1,25 @@
+" ############################
+" # Vim Plug package manager #
+" ############################
+
 call plug#begin('~/.vim/plugins')
 
-" AwesomeWM navigation
+" startify, nicer splash screen
+Plug 'mhinz/vim-startify'
+
+" colour scheme
+Plug 'arcticicestudio/nord-vim'
+
+" seamless navigation between vim splits and awesomeWM clients
 Plug 'intrntbrn/awesomewm-vim-tmux-navigator'
 
-" Custom snippets
-Plug 'MarcWeber/vim-addon-mw-utils'
-Plug 'tomtom/tlib_vim'
-Plug 'garbas/vim-snipmate'
+" vim snipmate, giving <tab> autocomplete functionality
+Plug 'MarcWeber/vim-addon-mw-utils'	" \
+Plug 'tomtom/tlib_vim'				" |-- Required
+Plug 'garbas/vim-snipmate'			" /
+Plug 'honza/vim-snippets'			" -- provides base snippets
 
-" Optional:
-Plug 'honza/vim-snippets'
-
-"latex plugin
+" vimtex, compile latex from within vim
 Plug 'lervag/vimtex'
 let g:tex_flavor='latex'
 let g:vimtex_view_method='zathura'
@@ -19,68 +27,151 @@ let g:vimtex_quickfix_mode=0
 set conceallevel=1
 let g:tex_conceal='abdmg'
 
-" Plug 'brennier/quicktex'
+" delimmate, automatically end delimeters like (
 Plug 'Raimondi/delimitMate'
 
-" A Vim Plugin for Lively Previewing LaTeX PDF Output
-" Plug 'xuhdev/vim-latex-live-preview', { 'for': 'tex' }
-" let g:livepreview_previewer = 'zathura'
-
-"nice color scheme
-Plug 'arcticicestudio/nord-vim'
-let g:nord_cursor_line_number_background = 1
-
-"Nice plugins
+" tcomment, comment lines and selections
 Plug 'tomtom/tcomment_vim'
-"Plug 'airblade/vim-gitgutter'
 
-"Indent guide (doesn't work for some reason)
-" Plug 'nathanaelkane/vim-indent-guides'
-"let g:indent_guides_guide_size = 1
-"let g:indent_guides_color_change_percent = 3
-"let g:indent_guides_enable_on_vim_startup = 1
+" gitgutter, see git changes as you edit
+Plug 'airblade/vim-gitgutter'
 
-" Messes up with the latex plugins, so not using it
-"Plug 'Valloric/YouCompleteMe'
-"let g:ycm_global_ycm_extra_conf = '~/.vim/plugins/YouCompleteMe/cpp/ycm/.ycm_extra_conf.py'
+" ????, simple status screen
+Plug 'vim-airline/vim-airline'
 
-"Plug 'rdnetto/YCM-Generator', { 'branch': 'stable'}
+" vimwiki, create your own personal wiki pages
 
+" repeat, gives nice dot commands to other plugins
+Plug 'tpope/vim-repeat'
+
+" easyclip, only modify clipboard with m and y
+Plug 'svermeulen/vim-easyclip'
+Plug 'svermeulen/vim-yoink'
+
+" sneak, s<key1><key2>. Use cl for s and cc for S
+Plug 'justinmk/vim-sneak'
 
 call plug#end()
 
-"count words in latex documents
+" ##################### statusline ######################
+
+let g:airline_detect_spell=0
+let g:airline_detect_spelllang = 0
+
+" #################### miscellaneous ####################
+
+" make vim auto-detect filetypes
+filetype plugin indent on
+
+" no idea what this does, but it fixes a bug causing
+" strange "<4;2m" characters to appear
+let &t_TI = ""
+let &t_TE = ""
+
+" fix backspace key
+set backspace=indent,eol,start
+
+" count number of words in latex documents or
+" visual selection with :WC and :'<,'>WC
 function! WC()
     let filename = expand("%")
     let cmd = "detex " . filename . " | wc -w | tr -d [:space:]"
     let result = system(cmd)
     echo result . " words"
 endfunction
-
-" for entire file and a range, respectively
-" command WC call WC()
 command! -range=% WC <line1>,<line2>w !detex | wc -w
 
-" set up spell checking
+" spell checking
 set spelllang=en_gb
 set spell
 
-" line numbers
-set number
+" scrolloff, always show some stuff above/below cursor
+set scrolloff=10
+set sidescrolloff=30
 
-" case search
+" ##################### search #########################
+
+" ignore case when searching unless
+" some characters are capitalised 
 set ignorecase
 set smartcase
 
-"Nord theme stuff
+" highlight search matches until space is pressed
+set hlsearch
+nnoremap <silent> <Space> :nohlsearch<Bar>:echo<CR>
+
+
+" ################# lines and cursor ###################
+
+" show line numbers
+set number
+
+" highlight current line
+set cursorline
+
+" use relative line numbers
+set relativenumber
+
+" #################### tabs ############################
+
+set tabstop=4 softtabstop=0
+set shiftwidth=4
+set expandtab smarttab
+
+set list listchars=tab:\>\ ,trail:%
+
+" #################### gitgutter #######################
+
+set updatetime=500
+let g:gitgutter_realtime = 0
+let g:gitgutter_eager = 0
+nmap ]h <Plug>(GitGutterNextHunk)
+nmap [h <Plug>(GitGutterPrevHunk)
+omap ih <Plug>(GitGutterTextObjectInnerPending)
+omap ah <Plug>(GitGutterTextObjectOuterPending)
+xmap ih <Plug>(GitGutterTextObjectInnerVisual)
+xmap ah <Plug>(GitGutterTextObjectOuterVisual)
+
+" ##################### easyclip #######################
+
+" remap mark key
+nnoremap gm m
+
+" autoformat pastes and toggle with /cf
+let g:yoinkAutoFormatPaste=1
+nmap <leader>cf <plug>(YoinkPostPasteToggleFormat)
+nmap M <Plug>MoveMotionEndOfLinePlug
+
+" cycle through yanks after pasting
+nmap <c-n> <plug>(YoinkPostPasteSwapBack)
+nmap <c-p> <plug>(YoinkPostPasteSwapForward)
+
+nmap p <plug>(YoinkPaste_p)
+nmap P <plug>(YoinkPaste_P)
+
+" ##################### sneak ##########################
+
+map s <Plug>Sneak_s
+map S <Plug>Sneak_S
+
+" set highlight colours
+autocmd VimEnter * hi! link Sneak Search
+
+" ################## colour scheme #####################
+
+" make comments brighter
 augroup nord-overrides
-  autocmd!
-  autocmd ColorScheme nord highlight Comment ctermfg=14
+    autocmd!
+    autocmd ColorScheme nord highlight Comment ctermfg=14
 augroup END
 
-"set colorscheme to nord
+" italic comments
+set t_ZH=[3m
+set t_ZR=[23m
+autocmd VimEnter * highlight Comment cterm=italic
+
+" set the colour scheme to nord
 colorscheme nord
 
-"tab length
-set tabstop=4
-set shiftwidth=4
+" remove underline from current line number
+hi CursorLineNr NONE
