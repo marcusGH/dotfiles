@@ -63,7 +63,7 @@ user_dir = "/home/marcus/"
 -- This is used as the default terminal and editor to run.
 terminal = "x-terminal-emulator --hide-menubar"
 -- Default text editor
-editor = "vim"
+editor = awful.util.get_configuration_dir() .. "delayLaunch.sh vim"
 editor_cmd = terminal .. " -e " .. editor
 -- Rofi launcher command
 rofi_command = 'env /usr/bin/rofi -dpi ' .. get_dpi() .. ' -width ' ..
@@ -71,6 +71,8 @@ rofi_command = 'env /usr/bin/rofi -dpi ' .. get_dpi() .. ' -width ' ..
                          '~/.config/rofi/nord.rasi -run-command ' ..
 						 '"/bin/bash -c -i \'shopt -s expand_aliases; {cmd}\'"'
 firefox_command = "env firefox"
+vim_command     = "vim"
+nautilus_command= "nautilus /home/marcus"
 i3lock_command  = "i3lock -i " .. awful.util.get_configuration_dir() .. "themes/nord/lockscreen.png"
 
 -- Default modkey.
@@ -190,20 +192,22 @@ mytextclock:buttons(gears.table.join(
 -- tag definitions
 screen.connect_signal("request::desktop_decoration", function(s)
 	-- This alias saves some typing
-	local l = awful.layout.suit 
+	local l = awful.layout.suit
 	-- main tag (start at this one)
 	awful.tag.add(" TRM ", {
 		selected = true,
-		layout = l.fair,
+		layout = l.spiral.dwindle,
 		gap_single_client = false,
 		gap = 15,
 		screen = s,
 	})
 	-- dev tag (development in e.g. jetbrain IDEs)
 	awful.tag.add(" DEV ", {
-		layout = l.tile,
+		layout = l.tile.left,
 		gap_single_client = false,
-		gap = 5,
+        master_width_factor = 0.6,
+        master_count = 1,
+		gap = 0,
 		screen = s,
 	})
 	-- www tag (internet browsing)
@@ -439,6 +443,12 @@ awful.keyboard.append_global_keybindings({
 	-- Open the browser
 	awful.key({ modkey },			 "b",	  function () awesome.spawn(firefox_command) end,
 		{description = "run firefox", group = "launcher"}),
+    -- Open vim
+    awful.key({ modkey },            "v",     function() awful.util.spawn_with_shell(editor_cmd) end,
+        {description = "run vim",     group = "launcher"}),
+    -- Open nautilus
+    awful.key({ modkey },            "e",     function() awful.util.spawn(nautilus_command) end,
+        {description = "open file manager", group="launcher"}),
 	-- Open config menu
 	awful.key({ modkey },			 "c",	  function () my_config_menu:show() end,
 		{description = "show config menu", group = "launcher"}),
@@ -469,13 +479,13 @@ awful.keyboard.append_global_keybindings({
               {description = "increase master width factor", group = "layout"}),
     awful.key({ modkey, "Shift"   }, ",",     function () awful.tag.incmwfact(-0.05)          end,
               {description = "decrease master width factor", group = "layout"}),
-    awful.key({ modkey, "Shift"   }, "h",     function () awful.tag.incnmaster( 1, nil, true) end,
+    awful.key({ modkey,           }, "Right",     function () awful.tag.incnmaster( 1, nil, true) end,
               {description = "increase the number of master clients", group = "layout"}),
-    awful.key({ modkey, "Shift"   }, "l",     function () awful.tag.incnmaster(-1, nil, true) end,
+    awful.key({ modkey,           }, "Left",     function () awful.tag.incnmaster(-1, nil, true) end,
               {description = "decrease the number of master clients", group = "layout"}),
-    awful.key({ modkey, "Control" }, "h",     function () awful.tag.incncol( 1, nil, true)    end,
+    awful.key({ modkey,           }, "Up",       function () awful.tag.incncol( 1, nil, true)    end,
               {description = "increase the number of columns", group = "layout"}),
-    awful.key({ modkey, "Control" }, "l",     function () awful.tag.incncol(-1, nil, true)    end,
+    awful.key({ modkey,           }, "Down",     function () awful.tag.incncol(-1, nil, true)    end,
               {description = "decrease the number of columns", group = "layout"}),
     awful.key({ modkey,           }, "space", function () awful.layout.inc( 1)                end,
               {description = "select next", group = "layout"}),
@@ -485,12 +495,12 @@ awful.keyboard.append_global_keybindings({
 
 -- Tag related keybindings
 awful.keyboard.append_global_keybindings({
-    awful.key({ modkey,           }, "Left",   awful.tag.viewprev,
+    awful.key({ modkey, "Shift"   }, "h"  ,    awful.tag.viewprev,
               {description = "view previous", group = "tag"}),
-    awful.key({ modkey,           }, "Right",  awful.tag.viewnext,
-              {description = "view next", group = "tag"}),
+    awful.key({ modkey, "Shift"   }, "l"   ,   awful.tag.viewnext,
+              {description = "view next",     group = "tag"}),
     awful.key({ modkey,           }, "Escape", awful.tag.history.restore,
-              {description = "go back", group = "tag"}),
+              {description = "go back",       group = "tag"}),
     awful.key {
         modifiers   = { modkey },
         keygroup    = "numrow",
@@ -637,8 +647,14 @@ ruled.client.connect_signal("request::rules", function()
             screen    = awful.screen.preferred,
             placement = awful.placement.no_overlap+awful.placement.no_offscreen,
 			-- force clients (mostly terminals) to get the correct sizes
-			size_hints_honor = true
-        }
+			size_hints_honor = false
+        }, callback = function(c)
+            -- spawn new clients in DEV and in TRM as slaves
+            if (c.first_tag.name == " DEV " or
+                c.first_tag.name == " TRM ") then
+                awful.client.setslave(c)
+            end
+    end
     }
 
     -- Floating clients.

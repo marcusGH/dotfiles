@@ -58,36 +58,6 @@ call plug#end()
 let g:airline_detect_spell=0
 let g:airline_detect_spelllang = 0
 
-" #################### miscellaneous ####################
-
-" make vim auto-detect filetypes
-filetype plugin indent on
-
-" no idea what this does, but it fixes a bug causing
-" strange "<4;2m" characters to appear
-let &t_TI = ""
-let &t_TE = ""
-
-" fix backspace key
-set backspace=indent,eol,start
-
-" count number of words in latex documents or
-" visual selection with :WC and :'<,'>WC
-function! WC()
-    let filename = expand("%")
-    let cmd = "detex " . filename . " | wc -w | tr -d [:space:]"
-    let result = system(cmd)
-    echo result . " words"
-endfunction
-command! -range=% WC <line1>,<line2>w !detex | wc -w
-
-" spell checking
-set spelllang=en_gb
-set spell
-
-" scrolloff, always show some stuff above/below cursor
-set scrolloff=10
-set sidescrolloff=30
 
 " ##################### search #########################
 
@@ -149,6 +119,9 @@ nmap <c-p> <plug>(YoinkPostPasteSwapForward)
 nmap p <plug>(YoinkPaste_p)
 nmap P <plug>(YoinkPaste_P)
 
+" use the + register by default for yanking
+set clipboard=unnamedplus
+
 " ##################### sneak ##########################
 
 map s <Plug>Sneak_s
@@ -175,3 +148,34 @@ colorscheme nord
 
 " remove underline from current line number
 hi CursorLineNr NONE
+
+" #################### miscellaneous ####################
+
+" make vim auto-detect filetypes
+filetype plugin indent on
+
+" no idea what this does, but it fixes a bug causing
+" strange "<4;2m" characters to appear
+let &t_TI = ""
+let &t_TE = ""
+
+" fix backspace key
+set backspace=indent,eol,start
+
+" count number of words in latex documents or
+" visual selection with :WC and :'<,'>WC
+function! WC()
+    let filename = expand("%")
+    let cmd = "detex " . filename . " | wc -w | tr -d [:space:]"
+    let result = system(cmd)
+    echo result . " words"
+endfunction
+command! -range=% WC <line1>,<line2>w !detex | wc -w
+
+" spell checking
+set spelllang=en_gb
+set spell
+
+" scrolloff, always show some stuff above/below cursor
+set scrolloff=10
+set sidescrolloff=30
