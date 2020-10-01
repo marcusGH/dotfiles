@@ -73,7 +73,7 @@ rofi_command = 'env /usr/bin/rofi -dpi ' .. get_dpi() .. ' -width ' ..
 firefox_command = "env firefox"
 vim_command     = "vim"
 nautilus_command= "nautilus /home/marcus"
-i3lock_command  = "i3lock -i " .. awful.util.get_configuration_dir() .. "themes/nord/lockscreen.png"
+i3lock_command  = "i3lock -i " .. awful.util.get_configuration_dir() .. "themes/nord/lockscreen.png --color=000000"
 
 -- Default modkey.
 -- Usually, Mod4 is the key with a logo between Control and Alt.
@@ -793,3 +793,5 @@ end)
 
 -- Auto-run programs script
 awful.spawn.with_shell(awful.util.get_configuration_dir() .. "autorun.sh")
+-- Fix multiple monitors
+awful.spawn.with_shell(awful.util.get_configuration_dir() .. "monitor-fix.sh")

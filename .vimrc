@@ -21,11 +21,6 @@ Plug 'honza/vim-snippets'			" -- provides base snippets
 
 " vimtex, compile latex from within vim
 Plug 'lervag/vimtex'
-let g:tex_flavor='latex'
-let g:vimtex_view_method='zathura'
-let g:vimtex_quickfix_mode=0
-set conceallevel=1
-let g:tex_conceal='abdmg'
 
 " delimmate, automatically end delimeters like (
 Plug 'Raimondi/delimitMate'
@@ -51,7 +46,28 @@ Plug 'svermeulen/vim-yoink'
 " sneak, s<key1><key2>. Use cl for s and cc for S
 Plug 'justinmk/vim-sneak'
 
+" vimwiki, own personal wiki and todo lists
+Plug 'vimwiki/vimwiki'
+
+" easyescape, press jk and kj to exit insert mode
+Plug 'zhou13/vim-easyescape'
+
 call plug#end()
+
+" #################### easyescape ######################
+
+let g:easyescape_chars = { "j": 1, "k": 1 }
+let g:easyescape_timeout = 300
+cnoremap jk <ESC>
+cnoremap kj <ESC>
+
+" ##################### latex ##########################
+
+let g:tex_flavor='latex'
+let g:vimtex_view_method='zathura'
+let g:vimtex_quickfix_mode=0
+set conceallevel=1
+let g:tex_conceal='abdmg'
 
 " ##################### statusline ######################
 
@@ -92,7 +108,7 @@ set list listchars=tab:\>\ ,trail:%
 
 " #################### gitgutter #######################
 
-set updatetime=500
+set updatetime=5000
 let g:gitgutter_realtime = 0
 let g:gitgutter_eager = 0
 nmap ]h <Plug>(GitGutterNextHunk)
@@ -121,14 +137,18 @@ nmap P <plug>(YoinkPaste_P)
 
 " use the + register by default for yanking
 set clipboard=unnamedplus
+let g:yoinkSyncSystemClipboardOnFocus=1
 
 " ##################### sneak ##########################
 
 map s <Plug>Sneak_s
 map S <Plug>Sneak_S
 
-" set highlight colours
+" set highlight colours to nord
 autocmd VimEnter * hi! link Sneak Search
+
+" use smartcase
+let g:sneak#use_ic_scs = 1
 
 " ################## colour scheme #####################
 
@@ -148,6 +168,15 @@ colorscheme nord
 
 " remove underline from current line number
 hi CursorLineNr NONE
+
+" ##################### vimwiki #########################
+
+" use markdown
+let g:vimwiki_list = [{'path': '~/vimwiki/', 'index': 'README',
+                      \ 'syntax': 'markdown', 'ext': '.md'}]
+
+" change indentation for markdown documents
+autocmd FileType markdown setlocal shiftwidth=2 tabstop=2
 
 " #################### miscellaneous ####################
 
@@ -172,7 +201,8 @@ function! WC()
 endfunction
 command! -range=% WC <line1>,<line2>w !detex | wc -w
 
-" spell checking
+" spell checking, use z= in normal and <C-X>s
+" (+ <C-N>, <C-p> to cycle) in insert mode
 set spelllang=en_gb
 set spell
 
