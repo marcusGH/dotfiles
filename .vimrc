@@ -6,7 +6,6 @@ call plug#begin('~/.vim/plugins')
 
 " startify, nicer splash screen
 Plug 'mhinz/vim-startify'
-
 " colour scheme
 Plug 'arcticicestudio/nord-vim'
 
@@ -17,9 +16,7 @@ Plug 'intrntbrn/awesomewm-vim-tmux-navigator'
 Plug 'MarcWeber/vim-addon-mw-utils'	" \
 Plug 'tomtom/tlib_vim'				" |-- Required
 Plug 'garbas/vim-snipmate'			" /
-Plug 'honza/vim-snippets'			" -- provides base snippets
-
-" vimtex, compile latex from within vim
+Plug 'honza/vim-snippets'			" -- provides base snippets " vimtex, compile latex from within vim
 Plug 'lervag/vimtex'
 
 " delimmate, automatically end delimeters like (
@@ -29,7 +26,7 @@ Plug 'Raimondi/delimitMate'
 Plug 'tomtom/tcomment_vim'
 
 " gitgutter, see git changes as you edit
-Plug 'airblade/vim-gitgutter'
+" Plug 'airblade/vim-gitgutter'
 
 " ????, simple status screen
 Plug 'vim-airline/vim-airline'
@@ -53,6 +50,11 @@ Plug 'vimwiki/vimwiki'
 Plug 'zhou13/vim-easyescape'
 
 call plug#end()
+
+
+" #################### delimitMate #####################
+
+let g:delimitMate_expand_cr = 1
 
 " #################### easyescape ######################
 
@@ -95,8 +97,8 @@ set number
 " highlight current line
 set cursorline
 
-" use relative line numbers
-set relativenumber
+" use relative line numbers (causes some lag?)
+" set relativenumber
 
 " #################### tabs ############################
 
@@ -108,7 +110,8 @@ set list listchars=tab:\>\ ,trail:%
 
 " #################### gitgutter #######################
 
-set updatetime=5000
+
+set updatetime=500
 let g:gitgutter_realtime = 0
 let g:gitgutter_eager = 0
 nmap ]h <Plug>(GitGutterNextHunk)
@@ -152,6 +155,9 @@ let g:sneak#use_ic_scs = 1
 
 " ################## colour scheme #####################
 
+" enable syntax highlighting
+" syntax on
+
 " make comments brighter
 augroup nord-overrides
     autocmd!
@@ -183,6 +189,9 @@ autocmd FileType markdown setlocal shiftwidth=2 tabstop=2
 " make vim auto-detect filetypes
 filetype plugin indent on
 
+" prerequisites for vimwiki
+set nocompatible
+
 " no idea what this does, but it fixes a bug causing
 " strange "<4;2m" characters to appear
 let &t_TI = ""
@@ -209,3 +218,9 @@ set spell
 " scrolloff, always show some stuff above/below cursor
 set scrolloff=10
 set sidescrolloff=30
+
+" auto source .bash_profile to get caps-lock escape
+set shell=bash\ -l
+
+" speed up vim a bit
+set lazyredraw

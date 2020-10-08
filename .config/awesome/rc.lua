@@ -71,7 +71,7 @@ rofi_command = 'env /usr/bin/rofi -dpi ' .. get_dpi() .. ' -width ' ..
                          '~/.config/rofi/nord.rasi -run-command ' ..
 						 '"/bin/bash -c -i \'shopt -s expand_aliases; {cmd}\'"'
 firefox_command = "env firefox"
-vim_command     = "vim"
+vim_command     = editor_cmd
 nautilus_command= "nautilus /home/marcus"
 i3lock_command  = "i3lock -i " .. awful.util.get_configuration_dir() .. "themes/nord/lockscreen.png --color=000000"
 
@@ -198,7 +198,7 @@ screen.connect_signal("request::desktop_decoration", function(s)
 		selected = true,
 		layout = l.spiral.dwindle,
 		gap_single_client = false,
-		gap = 15,
+		gap = 0,
 		screen = s,
 	})
 	-- dev tag (development in e.g. jetbrain IDEs)
@@ -219,6 +219,9 @@ screen.connect_signal("request::desktop_decoration", function(s)
 	awful.tag.add(" LTX ", {
 		layout = l.tile,
 		gap = 5,
+        master_width_factor = 0.4,
+        column_count = 2,
+        master_count = 1,
 		screen = s,
 	})
 	-- chat tag (e.g. discord)
@@ -651,6 +654,7 @@ ruled.client.connect_signal("request::rules", function()
         }, callback = function(c)
             -- spawn new clients in DEV and in TRM as slaves
             if (c.first_tag.name == " DEV " or
+                c.first_tag.name == " LTX " or
                 c.first_tag.name == " TRM ") then
                 awful.client.setslave(c)
             end
