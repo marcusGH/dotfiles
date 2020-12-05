@@ -138,8 +138,10 @@ mylauncher = awful.widget.launcher({ image = beautiful.awesome_icon,
 -- configuration menu for quickly accessing configuration files
 local my_configs = {
 	vim = user_dir .. ".vimrc",
-	awesome = awful.util.get_configuration_dir() .. "rc.lua",
-	rofi = user_dir .. ".config/rofi/nord.rasi"
+    awesome_th = awful.util.get_configuration_dir() .. "themes/nord/theme.lua",
+	awesome_rc = awful.util.get_configuration_dir() .. "rc.lua",
+	rofi = user_dir .. ".config/rofi/nord.rasi",
+    latex = user_dir .. "maks2/.latex/supo.sty"
 }
 local my_config_arr = {}
 for k, v in pairs(my_configs) do
@@ -474,6 +476,8 @@ awful.keyboard.append_global_keybindings({
 	-- i3 lockscreen
 	awful.key({ modkey },		   "q",    function () awful.util.spawn(i3lock_command) end,
 		{description = "lock the screen", group="hotkeys"})
+    -- awful.key({ modkey, "Shift"}, "w", function () mykeyboardlayout:next_layout() end,
+    --     {description = "Select the next keyboard layout", group = "hotkeys"})
 })
 
 -- Layout related keybindings
@@ -655,6 +659,7 @@ ruled.client.connect_signal("request::rules", function()
             -- spawn new clients in DEV and in TRM as slaves
             if (c.first_tag.name == " DEV " or
                 c.first_tag.name == " LTX " or
+                c.first_tag.name == " CHT " or
                 c.first_tag.name == " TRM ") then
                 awful.client.setslave(c)
             end

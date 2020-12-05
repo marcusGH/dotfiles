@@ -87,7 +87,10 @@ set smartcase
 " highlight search matches until space is pressed
 set hlsearch
 nnoremap <silent> <Space> :nohlsearch<Bar>:echo<CR>
-
+" pressing enter after search searches again with
+" spaces replaced by arbitrary whitespace. This
+" only happens in latex source files
+autocmd BufRead,BufNewFile *.tex cnoremap <expr><Space> '/?' =~ getcmdtype() ? '\_s\+' : ' '
 
 " ################# lines and cursor ###################
 

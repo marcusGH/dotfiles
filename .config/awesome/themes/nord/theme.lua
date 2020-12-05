@@ -14,7 +14,8 @@ local gears = require("gears")
 -- ##########################################################
 
 -- wallpaper
-theme.wallpaper = themes_path .. "nord/deadly-blue-minimalism-nord3-16-10.png"
+-- theme.wallpaper = themes_path .. "nord/deadly-blue-minimalism-nord3-16-10.png"
+theme.wallpaper = themes_path .. "nord/deadly-blue-minimalism-4k-nord3-16-9.png"
 
 -- general font to use
 theme.font      = "JetBrains Mono Bold 9"
