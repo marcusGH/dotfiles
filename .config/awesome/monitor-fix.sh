@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # get a list of the available displays as a space-separated string
-output=$(xrandr | grep -P '^(?=[^ ]+)(?=(?!Screen \d:)).*$' | awk '{print $(1);}')
+output=$(xrandr | grep -P '^(?=([^ ]+ connected))(?=(?!Screen \d:)).*$' | awk '{print $(1);}')
 
 # split the string by spaces
 displays=()
@@ -10,17 +10,22 @@ do
     displays+=($d)
 done
 
+# log
+echo "Found ${#displays[@]} displays: ${displays[@]}."
+
 # only do something if there are multiple screens
-if ((${#displays[@]} == 2))
-then
-    echo "Found two displays: ${displays[0]} and ${displays[1]}."
+if ((${#displays[@]} == 3)) ; then
+    c="xrandr --output ${displays[0]} --primary --right-of ${displays[1]} \
+              --output ${displays[1]} --right-of ${displays[2]}"
+    echo "Running the command: $c"
+    $c
+elif ((${#displays[@]} == 2)) ; then
     c="xrandr --output ${displays[0]} --primary --right-of ${displays[1]}"
     echo "Running the command: $c"
     $c
 elif ((${#displays[@]} == 1))
 then
-    echo "Only found one display: ${displays[0]}."
     echo "Doing nothing"
 else
-    echo "Found ${#displays[@]} displays, not sure what to do..."
+    echo "Not sure what to do..."
 fi
