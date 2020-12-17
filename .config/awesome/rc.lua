@@ -141,7 +141,8 @@ local my_configs = {
     awesome_th = awful.util.get_configuration_dir() .. "themes/nord/theme.lua",
 	awesome_rc = awful.util.get_configuration_dir() .. "rc.lua",
 	rofi = user_dir .. ".config/rofi/nord.rasi",
-    latex = user_dir .. "maks2/.latex/supo.sty"
+    latex = user_dir .. "maks2/.latex/supo.sty",
+    latex_snip = user_dir .. ".vim/snippets/tex.snippets"
 }
 local my_config_arr = {}
 for k, v in pairs(my_configs) do

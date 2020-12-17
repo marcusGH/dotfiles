@@ -213,6 +213,15 @@ function! WC()
 endfunction
 command! -range=% WC <line1>,<line2>w !detex | wc -w
 
+" take a screenshot and paste result into latex at cursor
+function! LatexScreenshot(name)
+    if !(len(a:name) == 0)
+        let wait = system('latexScreen ' . expand('%:p:h') . " " . a:name)
+        normal p
+    endif
+endfunction
+nnoremap <Leader>ls :call LatexScreenshot(input('Image name: '))<CR>
+
 " spell checking, use z= in normal and <C-X>s
 " (+ <C-N>, <C-p> to cycle) in insert mode
 set spelllang=en_gb
