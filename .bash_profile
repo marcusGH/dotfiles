@@ -57,8 +57,7 @@ latexScreen() {
         # take a screenshot an move it to the figures folder
         gnome-screenshot -f "$LOC/$2.png" -a
         # put the relevant text into the clipboard
-        echo """
-        \begin{figure}[H]
+        echo """\begin{figure}[H]
         \begin{center}
         \includegraphics[scale=0.6]{Figures/$2.png}
         \end{center}

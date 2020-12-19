@@ -24,6 +24,8 @@
 ## The dotfiles in ~ that we are interested in
 
 !.vimrc
+!.fzf.bash
 !.ideavimrc
 !.bash_profile
+!.ignore
 

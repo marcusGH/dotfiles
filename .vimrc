@@ -4,6 +4,8 @@
 
 call plug#begin('~/.vim/plugins')
 
+" fzf, fuzzy file finder
+Plug 'junegunn/fzf'
 " startify, nicer splash screen
 Plug 'mhinz/vim-startify'
 " colour scheme
@@ -187,6 +189,22 @@ let g:vimwiki_list = [{'path': '~/vimwiki/', 'index': 'README',
 " change indentation for markdown documents
 autocmd FileType markdown setlocal shiftwidth=2 tabstop=2
 
+" ##################### vimwiki #########################
+nnoremap <Leader>o :FZF <CR>
+let g:fzf_colors = 
+            \ { 'fg':      ['fg', 'Normal'],
+            \ 'bg':      ['bg', 'Normal'],
+            \ 'hl':      ['fg', 'Comment'],
+            \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
+            \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
+            \ 'hl+':     ['fg', 'Statement'],
+            \ 'info':    ['fg', 'PreProc'],
+            \ 'border':  ['fg', 'Ignore'],
+            \ 'prompt':  ['fg', 'Conditional'],
+            \ 'pointer': ['fg', 'Exception'],
+            \ 'marker':  ['fg', 'Keyword'],
+            \ 'spinner': ['fg', 'Label'],
+            \ 'header':  ['fg', 'Comment'] }
 " #################### miscellaneous ####################
 
 " make vim auto-detect filetypes

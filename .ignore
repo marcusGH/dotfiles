@@ -1,0 +1,13 @@
+*.xml
+*.iml
+*.fls
+*.log
+*.fdb_latexmk
+*.aux
+*.toc
+*.pyg
+*.pygtex
+*.synctex.gz
+*.pygstyle
+*.ipynb_checkpoints
+*.out
