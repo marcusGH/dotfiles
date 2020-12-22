@@ -20,7 +20,7 @@ if ((${#displays[@]} == 3)) ; then
     echo "Running the command: $c"
     $c
 elif ((${#displays[@]} == 2)) ; then
-    c="xrandr --output ${displays[0]} --primary --right-of ${displays[1]}"
+    c="xrandr --output ${displays[1]} --primary --right-of ${displays[0]}"
     echo "Running the command: $c"
     $c
 elif ((${#displays[@]} == 1))

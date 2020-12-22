@@ -1,13 +1,14 @@
 " ############################
 " # Vim Plug package manager #
 " ############################
-
 call plug#begin('~/.vim/plugins')
 
 " fzf, fuzzy file finder
 Plug 'junegunn/fzf'
+
 " startify, nicer splash screen
 Plug 'mhinz/vim-startify'
+
 " colour scheme
 Plug 'arcticicestudio/nord-vim'
 
@@ -15,25 +16,25 @@ Plug 'arcticicestudio/nord-vim'
 Plug 'intrntbrn/awesomewm-vim-tmux-navigator'
 
 " vim snipmate, giving <tab> autocomplete functionality
-Plug 'MarcWeber/vim-addon-mw-utils'	" \
-Plug 'tomtom/tlib_vim'				" |-- Required
-Plug 'garbas/vim-snipmate'			" /
-Plug 'honza/vim-snippets'			" -- provides base snippets " vimtex, compile latex from within vim
+Plug 'MarcWeber/vim-addon-mw-utils' " \
+Plug 'tomtom/tlib_vim'              "  |-- Required
+Plug 'garbas/vim-snipmate'          " /
+Plug 'honza/vim-snippets'           " -- provides base snippets
+
+" vimtex, compile latex from within vim with <Leader>ll
 Plug 'lervag/vimtex'
 
 " delimmate, automatically end delimeters like (
 Plug 'Raimondi/delimitMate'
 
-" tcomment, comment lines and selections
+" tcomment, comment lines and selections with gcc
 Plug 'tomtom/tcomment_vim'
 
 " gitgutter, see git changes as you edit
-" Plug 'airblade/vim-gitgutter'
+" Plug 'airblade/vim-gitgutter' " -- disabled due to lag
 
-" ????, simple status screen
+" airline, simple status screen
 Plug 'vim-airline/vim-airline'
-
-" vimwiki, create your own personal wiki pages
 
 " repeat, gives nice dot commands to other plugins
 Plug 'tpope/vim-repeat'
@@ -45,13 +46,14 @@ Plug 'svermeulen/vim-yoink'
 " sneak, s<key1><key2>. Use cl for s and cc for S
 Plug 'justinmk/vim-sneak'
 
-" vimwiki, own personal wiki and todo lists
+" vimwiki, create own personal wiki and todo lists with <Leader>ww
 Plug 'vimwiki/vimwiki'
 
 " easyescape, press jk and kj to exit insert mode
 Plug 'zhou13/vim-easyescape'
 
 call plug#end()
+
 
 
 " #################### delimitMate #####################
@@ -78,11 +80,10 @@ let g:tex_conceal='abdmg'
 let g:airline_detect_spell=0
 let g:airline_detect_spelllang = 0
 
-
 " ##################### search #########################
 
 " ignore case when searching unless
-" some characters are capitalised 
+" some characters are capitalised
 set ignorecase
 set smartcase
 
@@ -102,8 +103,8 @@ set number
 " highlight current line
 set cursorline
 
-" use relative line numbers (causes some lag?)
-" set relativenumber
+" use relative line numbers
+" set relativenumber " - disabled due to lag
 
 " #################### tabs ############################
 
@@ -111,10 +112,10 @@ set tabstop=4 softtabstop=0
 set shiftwidth=4
 set expandtab smarttab
 
+" highlight tab characters and show trailing white spaces
 set list listchars=tab:\>\ ,trail:%
 
 " #################### gitgutter #######################
-
 
 set updatetime=500
 let g:gitgutter_realtime = 0
@@ -131,7 +132,7 @@ xmap ah <Plug>(GitGutterTextObjectOuterVisual)
 " remap mark key
 nnoremap gm m
 
-" autoformat pastes and toggle with /cf
+" autoformat pastes and toggle with <Leader>cf
 let g:yoinkAutoFormatPaste=1
 nmap <leader>cf <plug>(YoinkPostPasteToggleFormat)
 nmap M <Plug>MoveMotionEndOfLinePlug
@@ -152,16 +153,16 @@ let g:yoinkSyncSystemClipboardOnFocus=1
 map s <Plug>Sneak_s
 map S <Plug>Sneak_S
 
-" set highlight colours to nord
-autocmd VimEnter * hi! link Sneak Search
-
 " use smartcase
 let g:sneak#use_ic_scs = 1
 
 " ################## colour scheme #####################
 
+" set highlight colours to nord
+autocmd VimEnter * hi! link Sneak Search
+
 " enable syntax highlighting
-" syntax on
+" syntax on " -- not sure why this is disabled
 
 " make comments brighter
 augroup nord-overrides
@@ -182,16 +183,19 @@ hi CursorLineNr NONE
 
 " ##################### vimwiki #########################
 
-" use markdown
+" use markdown formatting
 let g:vimwiki_list = [{'path': '~/vimwiki/', 'index': 'README',
                       \ 'syntax': 'markdown', 'ext': '.md'}]
 
 " change indentation for markdown documents
 autocmd FileType markdown setlocal shiftwidth=2 tabstop=2
 
-" ##################### vimwiki #########################
+" ##################### fuzzy search ###################
+
+" Use <Leader>o to open to prompt
 nnoremap <Leader>o :FZF <CR>
-let g:fzf_colors = 
+" Use Nord colours
+let g:fzf_colors =
             \ { 'fg':      ['fg', 'Normal'],
             \ 'bg':      ['bg', 'Normal'],
             \ 'hl':      ['fg', 'Comment'],
@@ -205,6 +209,39 @@ let g:fzf_colors =
             \ 'marker':  ['fg', 'Keyword'],
             \ 'spinner': ['fg', 'Label'],
             \ 'header':  ['fg', 'Comment'] }
+
+" ################### Utility functions #################
+
+" :WC
+"   count number of words in latex documents or
+"   visual selection with :WC or :'<,'>WC
+function! WC()
+    let filename = expand("%")
+    let cmd = "detex " . filename . " | wc -w | tr -d [:space:]"
+    let result = system(cmd)
+    echo result . " words"
+endfunction
+command! -range=% WC <line1>,<line2>w !detex | wc -w
+
+" <Leader>ls
+"   take a screenshot and paste result into latex at cursor
+function! LatexScreenshot(name)
+    if !(len(a:name) == 0)
+        let wait = system('latexScreen ' . expand('%:p:h') . " " . a:name)
+        normal p
+    endif
+endfunction
+nnoremap <Leader>ls :call LatexScreenshot(input('Image name: '))<CR>
+
+" :TrimWhitespace
+"   remove all trailing white spaces from the current document
+function! TrimWhitespace()
+    let l:save = winsaveview()
+    keeppatterns %s/\s\+$//e
+    call winrestview(l:save)
+endfunction
+command! TrimWhitespace call TrimWhitespace()
+
 " #################### miscellaneous ####################
 
 " make vim auto-detect filetypes
@@ -214,31 +251,12 @@ filetype plugin indent on
 set nocompatible
 
 " no idea what this does, but it fixes a bug causing
-" strange "<4;2m" characters to appear
+" strange "<4;2m" characters to appear with vim-airline
 let &t_TI = ""
 let &t_TE = ""
 
-" fix backspace key
+" fix backspace key not working on vim8
 set backspace=indent,eol,start
-
-" count number of words in latex documents or
-" visual selection with :WC and :'<,'>WC
-function! WC()
-    let filename = expand("%")
-    let cmd = "detex " . filename . " | wc -w | tr -d [:space:]"
-    let result = system(cmd)
-    echo result . " words"
-endfunction
-command! -range=% WC <line1>,<line2>w !detex | wc -w
-
-" take a screenshot and paste result into latex at cursor
-function! LatexScreenshot(name)
-    if !(len(a:name) == 0)
-        let wait = system('latexScreen ' . expand('%:p:h') . " " . a:name)
-        normal p
-    endif
-endfunction
-nnoremap <Leader>ls :call LatexScreenshot(input('Image name: '))<CR>
 
 " spell checking, use z= in normal and <C-X>s
 " (+ <C-N>, <C-p> to cycle) in insert mode
