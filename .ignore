@@ -11,3 +11,4 @@
 *.pygstyle
 *.ipynb_checkpoints
 *.out
+*~

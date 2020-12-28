@@ -13,4 +13,4 @@ fi
 source "/home/marcus/GitHub/fzf/shell/key-bindings.bash"
 
 # Use silver searcher
-export FZF_DEFAULT_COMMAND='ag -U -l --path-to-ignore ~/.ignore'
+export FZF_DEFAULT_COMMAND='ag -U -l --hidden --path-to-ignore ~/.ignore'
