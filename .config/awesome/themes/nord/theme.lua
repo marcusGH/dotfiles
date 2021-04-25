@@ -16,6 +16,7 @@ local gears = require("gears")
 -- wallpaper
 -- theme.wallpaper = themes_path .. "nord/deadly-blue-minimalism-nord3-16-10.png"
 theme.wallpaper = themes_path .. "nord/deadly-blue-minimalism-4k-nord3-16-9.png"
+-- theme.wallpaper = themes_path .. "nord/nord-water.png"
 
 -- general font to use
 theme.font      = "JetBrains Mono Bold 9"
@@ -42,13 +43,13 @@ theme.nord15 = "#B48EAD"
 theme.fg_normal  = theme.nord6
 theme.fg_focus   = theme.nord8
 theme.fg_urgent  = theme.nord12
-theme.bg_normal  = theme.nord0
+theme.bg_normal  = theme.nord0 -- 0
 theme.bg_focus   = theme.nord1
 theme.bg_urgent  = theme.nord1
 theme.bg_systray = theme.bg_normal
 
 -- borders
-theme.border_width  = with_dpi(1)
+theme.border_width  = with_dpi(2)
 theme.border_normal = theme.bg_normal
 theme.border_focus  = theme.fg_focus
 theme.border_marked = theme.fg_urgent
@@ -123,12 +124,12 @@ theme.titlebar_maximized_button_normal_inactive = themes_path .. "nord/titlebar/
 local taglist_square_size = with_dpi(0)
 
 -- taglist colours
-theme.taglist_bg_focus = theme.nord3
+theme.taglist_bg_focus = theme.nord3 -- 3
 theme.taglist_fg_focus = theme.nord13
 theme.taglist_bg_occupied = theme.bg_normal
 theme.taglist_fg_occupied = theme.nord14
 theme.taglist_bg_empty = theme.bg_normal
-theme.taglist_fg_empty = theme.nord3
+theme.taglist_fg_empty = theme.nord3 -- 3
 theme.taglist_bg_urgent = theme.bg_normal
 theme.taglist_fg_urgent = theme.nord11
 theme.taglist_bg_volatile = transparent

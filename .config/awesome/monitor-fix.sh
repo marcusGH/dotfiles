@@ -1,11 +1,13 @@
 #!/usr/bin/env bash
 
 # order of the monitors from left to right
-MONITORS=(2 1 3 0)
+MONITORS=(1 0 2)
 # which monitors are rotated?
-ROTATED=0
+ROTATED=4
 # primary monitor
-PRIMARY=3
+PRIMARY=2
+# monitor to turn off
+OFF=1
 
 # get a list of the available displays as a space-separated string
 output=$(xrandr | grep -P '^(?=([^ ]+ connected))(?=(?!Screen \d:)).*$' | sort | awk '{print $(1);}')
@@ -22,6 +24,12 @@ echo "Found ${#displays[@]} displays:"
 for ((i=0; i<${#displays[@]}; i++)); do
     echo "  $i -> ${displays[$i]}"
 done
+
+# exit if only one monitor
+if ((${#displays[@]} == 1)) ; then
+    echo "Found only one monitor. Doing nothing...";
+    exit 1;
+fi
 
 # make the command
 COMMAND="xrandr"
@@ -48,6 +56,10 @@ for ((i=0; i<${#displays[@]}; i++)); do
         fi
         # rest of command
         COMMAND="${COMMAND} --left-of ${displays[${MONITORS[$i + 1]}]}"
+    fi
+    # turn the monitor off?
+    if (($OFF == ${MONITORS[$i]})) ; then
+        COMMAND="${COMMAND} --off"
     fi
 done
 

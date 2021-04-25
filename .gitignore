@@ -19,6 +19,8 @@
 !.config/custom-scripts/*
 !.config/firefox/
 !.config/firefox/*
+!.config/zathura/
+!.config/zathura/*
 !.config/compton.conf
 
 ## The dotfiles in ~ that we are interested in

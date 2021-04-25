@@ -1,4 +1,4 @@
--- awesome_mode: api-level=4:screen=on
+
 
 -- ##########################################################
 -- #                     	IMPORTS						 	#
@@ -73,7 +73,7 @@ rofi_command = 'env /usr/bin/rofi -dpi ' .. get_dpi() .. ' -width ' ..
 firefox_command = "env firefox"
 vim_command     = editor_cmd
 nautilus_command= "nautilus /home/marcus"
-i3lock_command  = "i3lock -i " .. awful.util.get_configuration_dir() .. "themes/nord/lockscreen.png --color=000000"
+i3lock_command  = awful.util.get_configuration_dir() .. "i3lock-fancy-multimonitor/lock -b=0x8 -n"
 
 -- Default modkey.
 -- Usually, Mod4 is the key with a logo between Control and Alt.
@@ -89,15 +89,15 @@ tag.connect_signal("request::default_layouts", function()
         awful.layout.suit.tile,
         awful.layout.suit.tile.left,
         awful.layout.suit.tile.bottom,
-        awful.layout.suit.tile.top,
-        awful.layout.suit.fair,
-        awful.layout.suit.fair.horizontal,
-        awful.layout.suit.spiral,
-        awful.layout.suit.spiral.dwindle,
-        awful.layout.suit.max,
-        awful.layout.suit.max.fullscreen,
-        awful.layout.suit.magnifier,
-        awful.layout.suit.corner.nw,
+        -- awful.layout.suit.tile.top,
+        -- awful.layout.suit.fair,
+        -- awful.layout.suit.fair.horizontal,
+        -- awful.layout.suit.spiral,
+        -- awful.layout.suit.spiral.dwindle,
+        -- awful.layout.suit.max,
+        -- awful.layout.suit.max.fullscreen,
+        -- awful.layout.suit.magnifier,
+        -- awful.layout.suit.corner.nw,
     })
 end)
 
@@ -140,9 +140,11 @@ local my_configs = {
 	vim = user_dir .. ".vimrc",
     awesome_th = awful.util.get_configuration_dir() .. "themes/nord/theme.lua",
 	awesome_rc = awful.util.get_configuration_dir() .. "rc.lua",
-	rofi = user_dir .. ".config/rofi/nord.rasi",
     latex = user_dir .. "maks2/.latex/supo.sty",
-    latex_snip = user_dir .. ".vim/snippets/tex.snippets"
+    latex_snip = user_dir .. ".vim/snippets/tex.snippets",
+    rofi = user_dir .. ".config/rofi/nord.rasi",
+    monitor = awful.util.get_configuration_dir() .. "monitor-fix.sh",
+    bashprofile = user_dir .. ".bash_profile"
 }
 local my_config_arr = {}
 for k, v in pairs(my_configs) do
@@ -196,40 +198,44 @@ mytextclock:buttons(gears.table.join(
 screen.connect_signal("request::desktop_decoration", function(s)
 	-- This alias saves some typing
 	local l = awful.layout.suit
+    -- primary tag (start here)
+    awful.tag.add(" PRM ", {
+        selected = true,
+        layout = l.tile,
+        screen = s,
+    })
 	-- main tag (start at this one)
 	awful.tag.add(" TRM ", {
-		selected = true,
-		layout = l.spiral.dwindle,
-		gap_single_client = false,
+		layout = l.tile,
+		gap_single_client = true,
 		gap = 0,
 		screen = s,
-	})
-	-- dev tag (development in e.g. jetbrain IDEs)
-	awful.tag.add(" DEV ", {
-		layout = l.tile.left,
-		gap_single_client = false,
-        master_width_factor = 0.6,
-        master_count = 1,
-		gap = 0,
-		screen = s,
-	})
-	-- www tag (internet browsing)
-	awful.tag.add(" WEB ", {
-		layout = l.max.fullscreen,
-		screen = s
 	})
 	-- latex tag (vim + zathura)
 	awful.tag.add(" LTX ", {
 		layout = l.tile,
 		gap = 5,
-        master_width_factor = 0.4,
-        column_count = 2,
+        master_width_factor = 0.5,
+        column_count = 1, -- change to 2 on large monitor
         master_count = 1,
 		screen = s,
 	})
+    -- dev tag (development in e.g. jetbrain IDEs)
+    awful.tag.add(" DEV ", {
+        layout = l.tile.left,
+        gap_single_client = false,
+        master_width_factor = 0.6,
+        master_count = 1,
+        gap = 0,
+        screen = s,
+    })
 	-- chat tag (e.g. discord)
 	awful.tag.add(" CHT ", {
-		layout = l.tile,
+		layout = l.tile.left,
+        gap_single_client = false,
+        master_width_factor = 0.7,
+        master_count = 1,
+        gap = 0,
 		screen = s
 	})
 	-- float tag (???)
@@ -237,6 +243,11 @@ screen.connect_signal("request::desktop_decoration", function(s)
 		layout = l.floating,
 		screen = s,
 	})
+    -- www tag (internet browsing)
+    awful.tag.add(" WEB ", {
+        layout = l.max.fullscreen,
+        screen = s
+    })
     -- Each screen has its own tag table.
     -- awful.tag({ "1", "2", "3", "4", "5", "6", "7", "8", "9" }, s, awful.layout.layouts[1])
 
@@ -405,9 +416,9 @@ awful.keyboard.append_global_keybindings({
               {description = "swap with next client by index", group = "client"}),
     awful.key({ modkey, "Shift"   }, "k", function () awful.client.swap.byidx( -1)    end,
               {description = "swap with previous client by index", group = "client"}),
-    awful.key({ modkey, "Control" }, "j", function () awful.screen.focus_relative( 1) end,
+    awful.key({ modkey, "Control" }, "j", function () awful.screen.focus_relative( -1) end,
               {description = "focus the next screen", group = "screen"}),
-    awful.key({ modkey, "Control" }, "k", function () awful.screen.focus_relative(-1) end,
+    awful.key({ modkey, "Control" }, "k", function () awful.screen.focus_relative(1) end,
               {description = "focus the previous screen", group = "screen"}),
     awful.key({ modkey,           }, "u", awful.client.urgent.jumpto,
               {description = "jump to urgent client", group = "client"}),
@@ -609,6 +620,8 @@ client.connect_signal("request::default_keybindings", function()
                 {description = "move to master", group = "client"}),
         awful.key({ modkey,           }, "o",      function (c) c:move_to_screen()               end,
                 {description = "move to screen", group = "client"}),
+        awful.key({ modkey, "Shift"   }, "o",      function (c) c:move_to_screen(c.screen.index-1)               end,
+                {description = "move from screen", group = "client"}),
         awful.key({ modkey,           }, "t",      function (c) c.ontop = not c.ontop            end,
                 {description = "toggle keep on top", group = "client"}),
         awful.key({ modkey,           }, "n",
@@ -673,7 +686,7 @@ ruled.client.connect_signal("request::rules", function()
         rule_any = {
             instance = { "copyq", "pinentry" },
             class    = {
-                "Arandr", "Blueman-manager", "Gpick", "Kruler", "Sxiv",
+                "Arandr", "Gpick", "Kruler", "Sxiv",
                 "Tor Browser", "Wpa_gui", "veromix", "xtightvncviewer"
             },
             -- Note that the name property shown in xprop might be set slightly after creation of the client
@@ -805,3 +818,5 @@ end)
 awful.spawn.with_shell(awful.util.get_configuration_dir() .. "autorun.sh")
 -- Fix multiple monitors
 awful.spawn.with_shell(awful.util.get_configuration_dir() .. "monitor-fix.sh")
+-- Turn off screen lock
+awful.spawn.with_shell("xset s off")

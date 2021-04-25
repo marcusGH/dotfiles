@@ -262,6 +262,7 @@ function vwidget:create_menu()
         { "unmute", function() self:unmute() end },
         { "Default Sink", sinks },
         { "pavucontrol", function() self:action("pavucontrol") end },
+        { "bluetooth", function() awful.util.spawn("blueman-manager") end }
     } }
 end
 

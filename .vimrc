@@ -52,6 +52,8 @@ Plug 'vimwiki/vimwiki'
 " easyescape, press jk and kj to exit insert mode
 Plug 'zhou13/vim-easyescape'
 
+" easy-align, ga& or ga= to align around char
+Plug 'junegunn/vim-easy-align'
 call plug#end()
 
 
@@ -67,7 +69,15 @@ let g:easyescape_timeout = 300
 cnoremap jk <ESC>
 cnoremap kj <ESC>
 
-" ##################### latex ##########################
+" ###################### easy-align #####################
+"
+" Start interactive EasyAlign in visual mode (e.g. vipga)
+xmap ga <Plug>(EasyAlign)
+
+" Start interactive EasyAlign for a motion/text object (e.g. gaip)
+nmap ga <Plug>(EasyAlign)
+
+" ##################### vimtex ##########################
 
 let g:tex_flavor='latex'
 let g:vimtex_view_method='zathura'
@@ -75,7 +85,22 @@ let g:vimtex_quickfix_mode=0
 set conceallevel=1
 let g:tex_conceal='abdmg'
 
-" ##################### statusline ######################
+" table of contents settings (open with <leader>lt)
+let g:vimtex_toc_config = {
+      \ 'name' : 'TOC',
+      \ 'layer_status' : { 'content': 1,
+      \                     'label': 0,
+      \                     'todo': 1,
+      \                     'include': 1 },
+      \ 'resize' : 1,
+      \ 'split_width' : 50,
+      \ 'todo_sorted' : 0,
+      \ 'show_help' : 1,
+      \ 'show_numbers' : 1,
+      \ 'mode' : 2,
+      \}
+
+" "##################### statusline ######################
 
 let g:airline_detect_spell=0
 let g:airline_detect_spelllang = 0
@@ -94,6 +119,9 @@ nnoremap <silent> <Space> :nohlsearch<Bar>:echo<CR>
 " spaces replaced by arbitrary whitespace. This
 " only happens in latex source files
 autocmd BufRead,BufNewFile *.tex cnoremap <expr><Space> '/?' =~ getcmdtype() ? '\_s\+' : ' '
+
+" highlight search as I type
+set incsearch
 
 " ################# lines and cursor ###################
 
@@ -244,6 +272,10 @@ command! TrimWhitespace call TrimWhitespace()
 
 " #################### miscellaneous ####################
 
+" use file specific changes
+set modeline
+set modelines=1
+
 " make vim auto-detect filetypes
 filetype plugin indent on
 
@@ -272,3 +304,23 @@ set shell=bash\ -l
 
 " speed up vim a bit
 set lazyredraw
+
+" joining comments is nicer
+set fo+=j
+
+
+let g:ascii = [
+            \'       o             _______',
+            \'        o           /       \',
+            \'         o          vvvvvvvvv /|__/|',
+            \'          o             I   /O,O   |',
+            \'           o      /|/|  I /_____   | ',
+            \'            o   /00  | J|/^ ^ ^ \  |   _//|',
+            \'               |/^^\ |  |^ ^ ^ ^ |W|  /oo |',
+            \'                \m_m_|   \m___m__|_|  \mm_|'
+            \]
+" don't change directory when opening a file
+let g:startify_change_to_dir=1
+let g:startify_bookmarks = [ {'m': '~/maks2/'} ]
+let g:startify_custom_header =
+            \ startify#pad(startify#fortune#boxed() + g:ascii)
