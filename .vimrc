@@ -50,9 +50,9 @@ Plug 'justinmk/vim-sneak'
 Plug 'vimwiki/vimwiki'
 
 " easyescape, press jk and kj to exit insert mode
-Plug 'zhou13/vim-easyescape'
+" Plug 'zhou13/vim-easyescape'
 
-" easy-align, ga& or ga= to align around char
+" easy-align, ga*& or ga= to align around char
 Plug 'junegunn/vim-easy-align'
 call plug#end()
 
@@ -64,10 +64,10 @@ let g:delimitMate_expand_cr = 1
 
 " #################### easyescape ######################
 
-let g:easyescape_chars = { "j": 1, "k": 1 }
-let g:easyescape_timeout = 300
-cnoremap jk <ESC>
-cnoremap kj <ESC>
+" let g:easyescape_chars = { "j": 1, "k": 1 }
+" let g:easyescape_timeout = 300
+" cnoremap jk <ESC>
+" cnoremap kj <ESC>
 
 " ###################### easy-align #####################
 "
@@ -222,6 +222,7 @@ autocmd FileType markdown setlocal shiftwidth=2 tabstop=2
 
 " Use <Leader>o to open to prompt
 nnoremap <Leader>o :FZF <CR>
+nnoremap <Leader>O :FZF ~/maks2/ <CR>
 " Use Nord colours
 let g:fzf_colors =
             \ { 'fg':      ['fg', 'Normal'],

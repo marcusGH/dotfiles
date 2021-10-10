@@ -1,13 +1,14 @@
 #!/usr/bin/env bash
 
 # order of the monitors from left to right
-MONITORS=(1 0 2)
+# MONITORS=(2 1 3 0)
+MONITORS=(0 1)
 # which monitors are rotated?
-ROTATED=4
+ROTATED=99
 # primary monitor
-PRIMARY=2
+PRIMARY=1
 # monitor to turn off
-OFF=1
+OFF=2
 
 # get a list of the available displays as a space-separated string
 output=$(xrandr | grep -P '^(?=([^ ]+ connected))(?=(?!Screen \d:)).*$' | sort | awk '{print $(1);}')

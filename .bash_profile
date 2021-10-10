@@ -9,6 +9,7 @@ complete -o bashdefault -o default -F _fzf_path_completion zathura
 
 # Custom aliases
 alias v='vim'
+alias z='zathura'
 alias ts='resize -s 24 80'
 alias tm='resize -s 36 120'
 alias tl='resize -s 48 160' 
@@ -65,7 +66,7 @@ examplate() {
         paper=$(echo "$1" | grep -oP "p\K\d+")
         question=$(echo "$1" | grep -oP "q\K\d+")
         # add in info to template
-        cat ~/maks2/.latex/templateExam.tex | perl -pe "s/YYYY/$year/g" | perl -pe "s/NNNN/$((question - 1))/g" | perl -pe "s/PPPP/$paper/g" >> "$1.tex"
+        cat ~/maks2/.latex/templateExam.tex | perl -pe "s/YYYY/$year/g" | perl -pe "s/NNNN/$((question - 1))/g" | perl -pe "s/MMMM/$question/g" | perl -pe "s/PPPP/$paper/g" >> "1234A-p$paper-q$question.tex"
     fi
 }
 
@@ -113,7 +114,6 @@ triposExam() {
         triposExam yDDDDpDqD [-s]";
         return 1;
     fi
-
 }
 
 # open up the audio controls
@@ -143,12 +143,26 @@ latexScreen() {
         # put the relevant text into the clipboard
         echo """\begin{figure}[H]
         \begin{center}
-        \includegraphics[scale=0.4]{Figures/$2.png}
+        \includegraphics[scale=.4]{Figures/$2.png}
         \end{center}
         \caption{jk}
         \label{fig:$2}
         \end{figure}
         """ | xclip -selection clipboard -i
+    fi
+}
+
+wacomFix() {
+    if [ -z "$1" ] ; then
+        echo "Give an integer (0,1,2,etc.):
+        $(xrandr --listactivemonitors)"
+    else
+        ids=$(xsetwacom --list devices | awk '{print $8}');
+        for i in $ids ; do
+            c="xsetwacom --set $i MapToOutput HEAD-$1";
+            echo "Running: $c";
+            $c
+        done
     fi
 }
 

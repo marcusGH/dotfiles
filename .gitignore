@@ -23,6 +23,8 @@
 !.config/zathura/*
 !.config/compton.conf
 
+part-II-project/
+
 ## The dotfiles in ~ that we are interested in
 
 !.vimrc

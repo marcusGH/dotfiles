@@ -205,9 +205,11 @@ screen.connect_signal("request::desktop_decoration", function(s)
         screen = s,
     })
 	-- main tag (start at this one)
-	awful.tag.add(" TRM ", {
-		layout = l.tile,
-		gap_single_client = true,
+	awful.tag.add(" TWO ", {
+		layout = l.tile.bottom,
+        master_width_factor = 0.85,
+        column_count = 3,
+        master_count = 2,
 		gap = 0,
 		screen = s,
 	})
@@ -416,9 +418,9 @@ awful.keyboard.append_global_keybindings({
               {description = "swap with next client by index", group = "client"}),
     awful.key({ modkey, "Shift"   }, "k", function () awful.client.swap.byidx( -1)    end,
               {description = "swap with previous client by index", group = "client"}),
-    awful.key({ modkey, "Control" }, "j", function () awful.screen.focus_relative( -1) end,
+    awful.key({ modkey, "Control" }, "j", function () awful.screen.focus_bydirection("left") end,
               {description = "focus the next screen", group = "screen"}),
-    awful.key({ modkey, "Control" }, "k", function () awful.screen.focus_relative(1) end,
+    awful.key({ modkey, "Control" }, "k", function () awful.screen.focus_bydirection("right") end,
               {description = "focus the previous screen", group = "screen"}),
     awful.key({ modkey,           }, "u", awful.client.urgent.jumpto,
               {description = "jump to urgent client", group = "client"}),
@@ -618,9 +620,9 @@ client.connect_signal("request::default_keybindings", function()
                 {description = "toggle floating", group = "client"}),
         awful.key({ modkey, "Control" }, "Return", function (c) c:swap(awful.client.getmaster()) end,
                 {description = "move to master", group = "client"}),
-        awful.key({ modkey,           }, "o",      function (c) c:move_to_screen()               end,
+        awful.key({ modkey,           }, "o",      function (c) c:move_to_screen(c.screen.get_next_in_direction(c.screen, "right").index)               end,
                 {description = "move to screen", group = "client"}),
-        awful.key({ modkey, "Shift"   }, "o",      function (c) c:move_to_screen(c.screen.index-1)               end,
+        awful.key({ modkey, "Shift"   }, "o",      function (c) c:move_to_screen(c.screen.get_next_in_direction(c.screen, "left").index)               end,
                 {description = "move from screen", group = "client"}),
         awful.key({ modkey,           }, "t",      function (c) c.ontop = not c.ontop            end,
                 {description = "toggle keep on top", group = "client"}),

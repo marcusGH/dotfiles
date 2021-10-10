@@ -1,3 +1,9 @@
+/* .tab-stack .tab-context-line .tab-loading-burst .tab-line { */
+/*     color: green !important; */
+/*     background-color: red !important; */
+/*     border-color: blue !important; */
+/* } */
+
 html#main-window {
 	--color-bg: #2e3440;
 	--toolbar-bgcolor: var(--color-bg) !important;
@@ -160,33 +166,40 @@ body#root {
 */
 
 /* Hide some bloat */
-.tab-close-button,
-.tab-line,
-.tabbrowser-tab::before,
-.tabbrowser-tab::after,
-.tabbrowser-tab .tab-icon-image {
-	display: none !important;
-}
+/* .tab-close-button, */
+/* .tab-line, */
+/* .tabbrowser-tab::before, */
+/* .tabbrowser-tab::after, */
+/* .tabbrowser-tab .tab-icon-image { */
+/* 	display: none !important; */
+/* } */
 
 /* Regular browser tabs */
-.tabbrowser-tab {
+tab.tabbrowser-tab {
 	background-color: #2e3440 !important;
 	background-image: linear-gradient(to left, var(--color-tab-normal-start), var(--color-tab-normal-end)) !important;
-	border-radius: var(--tab-height) !important;
-	margin-inline-end: var(--gap-between-tabs) !important;
-	max-height: var(--tab-height) !important;
-	min-height: var(--tab-height) !important;
+    border-radius: 25px !important;
+    padding: 20px !important;
+    margin: 200px !important;
+    width: 200px !important;
+    height 100px !important;
+	/* border-radius: var(--tab-height) !important; */
+	/* margin-inline-end: var(--gap-between-tabs) !important; */
+	/* max-height: var(--tab-height) !important; */
+	/* min-height: var(--tab-height) !important; */
 }
 
 .tabbrowser-tab:hover {
 	background-color: none !important;
 	background-image: linear-gradient(to left, #88c0d0, #88c0d0) !important;
+    border-radius: var(--tab-height) !important;
 	color: #eceff4 !important;
 }
 
 .tabbrowser-tab[selected="true"] {
 	background-color: none !important;
 	background-image: linear-gradient(to left, #5e81ac, #5e81ac) !important;
+    border-radius: var(--tab-height) !important;
 	color: #eceff4 !important;
 	font-weight: var(--tab-font-weight) !important;
 }
@@ -225,8 +238,15 @@ body#root {
 	display: none !important;
 }
 
+.tab-stack > .tab-background {
+    display: none !important;
+}
+
+.tab-content > .tab-close-button {
+    display: none !important;
+}
+
 .tab-stack {
-	display: flex !important;
 	justify-content: center !important;
 }
 
@@ -265,43 +285,43 @@ toolbarbutton#tabs-newtab-button {
 	display: none;
 }
 
-
-/*** BEGIN Firefox 77 (June 2, 2020) Override URL bar enlargement ***/
-
-  /* Compute new position, width, and padding */
-
-  #urlbar[breakout][breakout-extend] {
-	/* this fixes some alignment issues */
-	top: 10px !important;
-	left: 0px !important;
-	width: 100% !important;
-	padding: 0px !important;
-  }
-  /* for alternate Density settings */
-  [uidensity="compact"] #urlbar[breakout][breakout-extend] {
-	top: 3px !important;
-  }
-  [uidensity="touch"] #urlbar[breakout][breakout-extend] {
-	top: 4px !important;
-  }
-
-  /* Prevent shift of URL bar contents */
-
-  #urlbar[breakout][breakout-extend] > #urlbar-input-container {
-	height: var(--urlbar-height) !important;
-	padding: 0 !important;
-  }
-
-  /* Do not animate */
-
-  #urlbar[breakout][breakout-extend] > #urlbar-background {
-	animation: none !important;;
-  }
-
-  /* Remove shadows */
-
-  #urlbar[breakout][breakout-extend] > #urlbar-background {
-	box-shadow: none !important;
-  }
-
-/*** END Firefox 77 (June 2, 2020) Override URL bar enlargement ***/
+/*  */
+/* /*** BEGIN Firefox 77 (June 2, 2020) Override URL bar enlargement ***/ */
+/*  */
+/*   /* Compute new position, width, and padding */ */
+/*  */
+/*   #urlbar[breakout][breakout-extend] { */
+/* 	/* this fixes some alignment issues */ */
+/* 	top: 10px !important; */
+/* 	left: 0px !important; */
+/* 	width: 100% !important; */
+/* 	padding: 0px !important; */
+/*   } */
+/*   /* for alternate Density settings */ */
+/*   [uidensity="compact"] #urlbar[breakout][breakout-extend] { */
+/* 	top: 3px !important; */
+/*   } */
+/*   [uidensity="touch"] #urlbar[breakout][breakout-extend] { */
+/* 	top: 4px !important; */
+/*   } */
+/*  */
+/*   /* Prevent shift of URL bar contents */ */
+/*  */
+/*   #urlbar[breakout][breakout-extend] > #urlbar-input-container { */
+/* 	height: var(--urlbar-height) !important; */
+/* 	padding: 0 !important; */
+/*   } */
+/*  */
+/*   /* Do not animate */ */
+/*  */
+/*   #urlbar[breakout][breakout-extend] > #urlbar-background { */
+/* 	animation: none !important;; */
+/*   } */
+/*  */
+/*   /* Remove shadows */ */
+/*  */
+/*   #urlbar[breakout][breakout-extend] > #urlbar-background { */
+/* 	box-shadow: none !important; */
+/*   } */
+/*  */
+/* /*** END Firefox 77 (June 2, 2020) Override URL bar enlargement ***/ */
